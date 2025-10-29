@@ -1,4 +1,5 @@
-
+WALID DAFIR
+<img src="pHOTO 21" style="height:464px;margin-right:432px"/>
 # Rapport sur le PIB mondial 2024
 
 ## Aperçu global
