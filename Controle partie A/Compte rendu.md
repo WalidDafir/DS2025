@@ -1,52 +1,72 @@
-# Compte rendu du travail de nettoyage des données OpenFoodFacts
+# Compte rendu détaillé du travail de nettoyage du jeu de données OpenFoodFacts
 
-## Objectif
-Préparer un jeu de données propre et exploitable pour une analyse exploratoire. Le travail traite les valeurs manquantes, les incohérences, les doublons et les anomalies numériques.
+## 1. Objectif général
+Le travail vise à produire un dataset propre pour une analyse fiable. Le traitement couvre la lecture du fichier brut, l’étude des valeurs manquantes, la suppression des incohérences, la gestion des doublons, le contrôle des valeurs nutritionnelles et l’export du fichier final.
 
-## Chargement des données
-- Importation des librairies NumPy, Pandas, Matplotlib, Seaborn, OS.
-- Lecture du fichier CSV OpenFoodFacts avec `read_csv`, séparateur tabulation.
-- Affichage d’un échantillon pour vérifier la structure.
-- Le dataset contient plusieurs milliers de lignes et plusieurs centaines de variables.
+## 2. Chargement et exploration initiale
+- Importation de NumPy, Pandas, Matplotlib, Seaborn et OS.
+- Lecture du fichier en utilisant `read_csv` avec le séparateur tabulation.
+- Inspection de quelques lignes pour confirmer le format.
+- Vérification de la dimension du dataset. Le fichier contient un grand nombre de lignes et un nombre important de variables.
 
-## Analyse des valeurs manquantes
-- Calcul du taux de valeurs manquantes par variable.
-- Identification des colonnes dont le taux dépasse 50.
-- Suppression des colonnes avec 100 de valeurs nulles.
-- Filtrage des colonnes très peu renseignées afin de réduire le bruit.
+## 3. Analyse des valeurs manquantes
+### 3.1. Calcul des taux de nullité
+- Une fonction dédiée calcule le pourcentage de null pour chaque variable.
+- Les variables avec plus de 50 de valeurs null sont isolées pour examen.
+- Les variables avec 100 de valeurs null sont retirées car elles ne contiennent aucune information exploitable.
 
-## Gestion des doublons
-- Suppression des lignes duplicatives basées sur la colonne code.
+### 3.2. Impact du nettoyage
+- La suppression de ces colonnes réduit la complexité du dataset.
+- Le dataset devient plus léger et plus cohérent pour les analyses suivantes.
 
-## Nettoyage des variables quantitatives
-### Contrôle des valeurs sur 100 g
-- Vérification des colonnes protéines, lipides, glucides, sucres.
-- Suppression des lignes où une valeur dépasse 100 g pour 100 g de produit.
+## 4. Gestion des doublons
+- Recherche de doublons sur la variable code.
+- Suppression des entrées répétées pour éviter les biais dans les analyses.
 
-### Contrôles nutritionnels logiques
-- Les acides gras saturés ne doivent pas dépasser les acides gras totaux.
-- Le sodium doit rester inférieur au sel total.
-- Suppression des lignes non conformes.
+## 5. Nettoyage des données nutritionnelles
+### 5.1. Contrôles sur les valeurs pour 100 g
+Les colonnes suivantes sont contrôlées.
+- protéines_100g
+- fat_100g
+- carbohydrates_100g
+- sugars_100g  
+Un produit ne doit pas dépasser 100 g pour 100 g. Les lignes qui contiennent des valeurs supérieures à 100 sont supprimées.
 
-### Contrôle de la densité énergétique
-- L’énergie ne doit pas dépasser 3700 kJ ou 900 kcal pour 100 g.
-- Élimination des produits dépassant ces seuils.
+### 5.2. Contrôles logiques entre nutriments
+- Les acides gras saturés doivent être inférieurs aux acides gras totaux.
+- Le sodium doit être inférieur au sel total.
+- Les lignes non conformes sont supprimées car elles indiquent une erreur d’imputation.
 
-## Traitement des valeurs extrêmes
-- Calcul de la médiane et de l’écart type sur les variables additives_n et serving_quantity.
-- Visualisation pour repérer les dispersions.
-- Nettoyage des valeurs aberrantes situées loin des métriques calculées.
+### 5.3. Énergie maximale
+- L’énergie doit rester inférieure à 3700 kJ pour 100 g.
+- Elle doit rester inférieure à 900 kcal pour 100 g.
+- Les produits dépassant ces limites sont retirés.
 
-## Préparation des variables Nutriscore
-- Création de variables calculées pour le score global et la lettre Nutriscore.
-- Extraction d’un échantillon pour vérification.
-- Comparaison des Nutriscores calculés avec ceux du dataset.
-- Le taux de précision obtenu est inférieur à 50, ce qui montre que la reconstruction du Nutriscore n’est pas fiable avec les seules variables présentes.
-- Suppression des colonnes de Nutriscore calculé.
+## 6. Gestion des valeurs extrêmes
+### 6.1. Variables ciblées
+- additives_n
+- serving_quantity
 
-## Finalisation du nettoyage
-- Vérification de la structure finale du dataset propre.
-- Export du fichier nettoyé sous le nom cleaned_openfoodfacts.csv.
-- Le dataset nettoyé est prêt pour une analyse exploratoire.
+### 6.2. Méthode appliquée
+- Calcul de la médiane pour chaque variable.
+- Calcul de l’écart type pour détecter les valeurs éloignées.
+- Visualisation de la dispersion pour confirmer les anomalies.
+- Suppression des valeurs extrêmes situées en dehors des plages raisonnables.
 
+## 7. Travail sur les variables Nutriscore
+### 7.1. Calcul du Nutriscore
+- Création de deux nouvelles colonnes pour le score et la lettre calculée.
+- Extraction d’un échantillon pour vérifier la cohérence.
 
+### 7.2. Test de précision
+- Comparaison entre le Nutriscore calculé et celui présent dans les données originales.
+- Le taux de précision est inférieur à 50.
+- Les variables calculées sont supprimées car elles ne sont pas fiables pour une analyse sérieuse.
+
+## 8. Structure finale et export
+- Inspection du dataset final avec `info` pour vérifier les types et les colonnes restantes.
+- Réindexation sur la variable code.
+- Export au format CSV propre sous le nom cleaned_openfoodfacts.csv.
+
+## 9. Résultat
+Le dataset est maintenant réduit, cohérent, sans doublons, sans incohérences nutritionnelles et sans valeurs extrêmes inutiles. Il est prêt pour une analyse exploratoire et pour la production de visualisations fiables.
