@@ -1,4 +1,4 @@
-# Compte rendu détaillé du travail de nettoyage du jeu de données OpenFoodFacts
+# Compte rendu du jeu de données OpenFoodFacts
 
 ## 1. Objectif général
 Le travail vise à produire un dataset propre pour une analyse fiable. Le traitement couvre la lecture du fichier brut, l’étude des valeurs manquantes, la suppression des incohérences, la gestion des doublons, le contrôle des valeurs nutritionnelles et l’export du fichier final.
